@@ -1,0 +1,6 @@
+ETH_RPC_URL=<tenderlyurl>
+SOURCE_PRIVATE_KEY=<privatekeyofsource>
+TARGET_PRIVATE_KEY=<privatekey>
+SOURCE_ADDRESS=<sourceaccount>
+TARGET_ADDRESS=<targetaddress>
+ERC20_CONTRACT_ADDRESS=<contractaddress>

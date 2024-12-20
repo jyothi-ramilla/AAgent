@@ -1,0 +1,41 @@
+2024-12-20 08:47:06,951 - __main__ - INFO - Web3 is successfully connected to the Ethereum network.
+2024-12-20 08:47:06,972 - __main__ - INFO - [Agent1] Agent started.
+2024-12-20 08:47:06,973 - __main__ - INFO - [Agent2] Agent started.
+2024-12-20 08:47:06,973 - __main__ - INFO - [Agent1] Sent random message: space human
+2024-12-20 08:47:06,974 - __main__ - INFO - [Agent2] Sent random message: hello human
+2024-12-20 08:47:07,977 - __main__ - INFO - [Agent1] Handling message with hello: hello human
+2024-12-20 08:47:07,977 - __main__ - INFO - [Agent1] Responding to 'hello' in message: hello human
+2024-12-20 08:47:08,386 - __main__ - INFO - Balance fetched for 0x1B6c152fcD1E9236E5E8bD12A6bF2D57B0A1ea29: 10000000000000000000000 tokens
+2024-12-20 08:47:08,386 - __main__ - INFO - [Agent2] Current ERC20 balance: 10000000000000000000000
+2024-12-20 08:47:08,389 - __main__ - INFO - Balance fetched for 0xBeED83a2FF101cF8EE3f8856201A4d09A00bEf0d: 990000000000000000000000 tokens
+2024-12-20 08:47:08,390 - __main__ - INFO - [Agent1] Current ERC20 balance: 990000000000000000000000
+2024-12-20 08:47:08,973 - __main__ - INFO - [Agent1] Sent random message: human sky
+2024-12-20 08:47:08,975 - __main__ - INFO - [Agent2] Sent random message: human sun
+2024-12-20 08:47:10,974 - __main__ - INFO - [Agent1] Sent random message: ocean moon
+2024-12-20 08:47:10,975 - __main__ - INFO - [Agent2] Sent random message: ocean crypto
+2024-12-20 08:47:10,978 - __main__ - INFO - [Agent1] Handling message with crypto: ocean crypto
+2024-12-20 08:47:12,974 - __main__ - INFO - [Agent1] Sent random message: moon sky
+2024-12-20 08:47:12,975 - __main__ - INFO - [Agent2] Sent random message: world human
+2024-12-20 08:47:14,975 - __main__ - INFO - [Agent1] Sent random message: universe universe
+2024-12-20 08:47:14,976 - __main__ - INFO - [Agent2] Sent random message: hello ocean
+2024-12-20 08:47:15,859 - __main__ - INFO - Transfer from 0xBeED83a2FF101cF8EE3f8856201A4d09A00bEf0d successful, transaction hash: d646c5a4000ca3cd35c26f4df74aed95fe06482bae4dda86ba0cc23efc0d1c69
+2024-12-20 08:47:16,860 - __main__ - INFO - [Agent1] Handling message with hello: hello ocean
+2024-12-20 08:47:16,860 - __main__ - INFO - [Agent1] Responding to 'hello' in message: hello ocean
+2024-12-20 08:47:16,975 - __main__ - INFO - [Agent1] Sent random message: space universe
+2024-12-20 08:47:16,976 - __main__ - INFO - [Agent2] Sent random message: hello sun
+2024-12-20 08:47:17,860 - __main__ - INFO - [Agent1] Handling message with hello: hello sun
+2024-12-20 08:47:17,861 - __main__ - INFO - [Agent1] Responding to 'hello' in message: hello sun
+2024-12-20 08:47:18,976 - __main__ - INFO - [Agent1] Sent random message: sky moon
+2024-12-20 08:47:18,976 - __main__ - INFO - [Agent2] Sent random message: crypto world
+2024-12-20 08:47:19,650 - __main__ - INFO - Balance fetched for 0x1B6c152fcD1E9236E5E8bD12A6bF2D57B0A1ea29: 10000000000000000000001 tokens
+2024-12-20 08:47:19,650 - __main__ - INFO - [Agent2] Current ERC20 balance: 10000000000000000000001
+2024-12-20 08:47:19,709 - __main__ - INFO - Balance fetched for 0xBeED83a2FF101cF8EE3f8856201A4d09A00bEf0d: 989999999999999999999999 tokens
+2024-12-20 08:47:19,709 - __main__ - INFO - [Agent1] Current ERC20 balance: 989999999999999999999999
+2024-12-20 08:47:19,861 - __main__ - INFO - [Agent1] Handling message with crypto: crypto world
+2024-12-20 08:47:20,976 - __main__ - INFO - [Agent1] Sent random message: ocean sun
+2024-12-20 08:47:20,977 - __main__ - INFO - [Agent2] Sent random message: human sun
+2024-12-20 08:47:22,977 - __main__ - INFO - [Agent1] Sent random message: space world
+2024-12-20 08:47:22,977 - __main__ - INFO - [Agent2] Sent random message: human crypto
+^C2024-12-20 08:47:23,644 - __main__ - INFO - [Agent1] Agent stopping.
+2024-12-20 08:47:23,644 - __main__ - INFO - [Agent2] Agent stopping.
+2024-12-20 08:47:24,461 - __main__ - INFO - Transfer from 0xBeED83a2FF101cF8EE3f8856201A4d09A00bEf0d successful, transaction hash: 1ad314214bd5f2d4dd8c681ae4c214d45fc5a18d07894d16f14773c9fefb2c00

@@ -1,0 +1,20 @@
+# Base Image
+FROM python:3.12-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files
+COPY . /app
+
+# Install virtualenv
+RUN pip install --no-cache-dir virtualenv
+
+# Create a virtual environment
+RUN virtualenv venv
+
+# Activate the virtual environment and install dependencies
+RUN . venv/bin/activate && pip install --no-cache-dir web3 python-dotenv
+
+# Use the virtual environment to run the script
+CMD ["/app/venv/bin/python", "agent.py"]
