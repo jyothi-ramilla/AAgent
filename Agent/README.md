@@ -1,5 +1,5 @@
 
-# AIAgentToken Smart Contract & Agent Development
+# AgentToken Smart Contract & Agent Development
 
 ## Overview
 
@@ -36,6 +36,11 @@ This will build the Docker image for testing and execute the test cases.
 
 ---
 
+#### Libraries used
+
+    1. Web3
+    2. Standard Libraries
+    
 ### 2. Agent Code - agent.py
 
 The agent is designed to interact with the `AgentToken` smart contract by processing messages, checking balances, and performing transactions.
