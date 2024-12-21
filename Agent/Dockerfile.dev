@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir virtualenv
 RUN virtualenv venv
 
 # Activate the virtual environment and install dependencies
-RUN . venv/bin/activate && pip install --no-cache-dir web3 python-dotenv
+RUN . venv/bin/activate && pip install --no-cache-dir web3 
 
 # Use the virtual environment to run the script
 CMD ["/app/venv/bin/python", "agent.py"]

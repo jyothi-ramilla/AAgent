@@ -3,7 +3,6 @@ import random
 import logging
 from threading import Thread, Lock
 from web3 import Web3
-from dotenv import load_dotenv
 import os
 
 # Configure logging for the script
@@ -21,8 +20,19 @@ console_handler.setFormatter(formatter)
 # Add the console handler to the logger
 logger.addHandler(console_handler)
 
-# Load environment variables (from .env file)
-load_dotenv()
+# Function to load .env file into os.environ
+def load_env(file_path=".env"):
+    if os.path.exists(file_path):
+        with open(file_path, "r") as file:
+            for line in file:
+                # Ignore comments and blank lines
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    key, value = line.split("=", 1)
+                    os.environ[key.strip()] = value.strip()
+
+# Load environment variables from .env file
+load_env()
 
 # Constants from environment variables
 ETH_RPC_URL = os.getenv("ETH_RPC_URL")
@@ -215,33 +225,29 @@ if __name__ == "__main__":
     erc20_handler1 = ERC20Handler(ERC20_CONTRACT_ADDRESS, source_private_key, SOURCE_ADDRESS, TARGET_ADDRESS, nonce_manager1)
     erc20_handler2 = ERC20Handler(ERC20_CONTRACT_ADDRESS, target_private_key, TARGET_ADDRESS, SOURCE_ADDRESS, nonce_manager2)
 
-    # Create and start agents
+    # Create agents
     agent1 = AutonomousAgent("Agent1", inbox1, outbox1, erc20_handler1)
     agent2 = AutonomousAgent("Agent2", inbox2, outbox2, erc20_handler2)
 
-    # Register message handlers for both agents
-    agent1.register_message_handler("hello", lambda msg: logger.info(f"[{agent1.name}] Responding to 'hello' in message: {msg}"))
-    agent1.register_message_handler("crypto", lambda msg: agent1.erc20_handler.execute_transfer(1))
-
-    agent2.register_message_handler("hello", lambda msg: logger.info(f"[{agent2.name}] Responding to 'hello' in message: {msg}"))
-    agent2.register_message_handler("crypto", lambda msg: agent2.erc20_handler.execute_transfer(1))
+    # Register message handlers
+    agent1.register_message_handler("hello", lambda message: logger.info(f"[Agent1] Received hello message: {message}"))
+    agent2.register_message_handler("crypto", lambda message: logger.info(f"[Agent2] Received crypto message: {message}"))
 
     # Start agents
     agent1.start()
     agent2.start()
 
-    # Start additional threads for message generation and balance checking
+    # Run background tasks for agents
     Thread(target=agent1.generate_random_messages).start()
-    Thread(target=agent1.check_balance_periodically).start()
     Thread(target=agent2.generate_random_messages).start()
+    Thread(target=agent1.check_balance_periodically).start()
     Thread(target=agent2.check_balance_periodically).start()
 
+    # Let the script run indefinitely
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
+        logger.info("Shutting down agents.")
         agent1.stop()
         agent2.stop()
-        agent1.join()
-        agent2.join()
-        print("Exiting...")

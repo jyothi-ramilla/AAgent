@@ -1,16 +1,12 @@
 import os
 import logging
 from web3 import Web3
-from dotenv import load_dotenv
 import solcx
 from web3.exceptions import ContractLogicError
 
 # Configure logging settings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Load environment variables from .env file
-load_dotenv()
 
 class EthereumDeployer:
     """Class to handle Ethereum contract deployment using Web3."""
@@ -26,7 +22,7 @@ class EthereumDeployer:
 
     def _fetch_env_variable(self, variable_name):
         """Fetch environment variables with error handling."""
-        value = os.getenv(variable_name)
+        value = os.environ.get(variable_name)
         if not value:
             logger.error(f"Environment variable '{variable_name}' is missing.")
             raise EnvironmentError(f"{variable_name} not set in environment variables.")
@@ -160,8 +156,8 @@ def main():
     """Main function to handle the smart contract deployment process."""
     try:
         # Fetch environment variables
-        rpc_url = os.getenv("ETH_RPC_URL")
-        deployer_private_key = os.getenv("DEPLOYER_PRIVATE_KEY")
+        rpc_url = os.environ.get("ETH_RPC_URL")
+        deployer_private_key = os.environ.get("DEPLOYER_PRIVATE_KEY")
 
         if not rpc_url or not deployer_private_key:
             logger.error("RPC_URL or DEPLOYER_PRIVATE_KEY is missing in environment variables.")

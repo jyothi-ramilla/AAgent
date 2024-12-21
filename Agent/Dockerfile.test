@@ -14,11 +14,11 @@ RUN pip install --no-cache-dir virtualenv
 RUN python3 -m venv /app/venv
 
 # Install dependencies inside the virtual environment
-RUN /app/venv/bin/pip install --no-cache-dir pytest web3 python-dotenv
+RUN /app/venv/bin/pip install --no-cache-dir web3 
 
 # Set the virtual environment to be active
 ENV VIRTUAL_ENV=/app/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Run pytest to execute tests
-CMD ["pytest", "test_agents.py"]
+# Run the unittest-based test script
+CMD ["python", "-m", "unittest", "test_agents.py"]

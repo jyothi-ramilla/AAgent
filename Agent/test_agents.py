@@ -4,25 +4,44 @@ import time
 from unittest.mock import patch, MagicMock
 from agent import AutonomousAgent, Inbox, Outbox, ERC20Handler, NonceManager, logger
 import os
-from dotenv import load_dotenv
+
 # -------------------------------------------
-# UnitTest Test Cases
+# Custom .env loader using the standard library
 # -------------------------------------------
+def load_env(file_path=".env"):
+    """Load environment variables from a .env file into os.environ."""
+    try:
+        with open(file_path, "r") as file:
+            for line in file:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                key, value = line.split("=", 1)
+                os.environ[key] = value
+    except FileNotFoundError:
+        logger.warning(f"Environment file '{file_path}' not found. Skipping.")
+    except Exception as e:
+        logger.error(f"Error loading environment variables: {e}")
+        raise
 
 # Load environment variables from .env file
-load_dotenv()
+load_env()
 
 # Get the RPC URL and contract address from environment variables
 ETH_RPC_URL = os.getenv("ETH_RPC_URL")
 CONTRACT_ADDRESS = os.getenv("ERC20_CONTRACT_ADDRESS")
-SOURCE_PRIVATE_KEY=os.getenv("SOURCE_PRIVATE_KEY")
-TARGET_PRIVATE_KEY=os.getenv("TARGET_PRIVATE_KEY")
-SOURCE_ADDRESS=os.getenv("SOURCE_ADDRESS")
-TARGET_ADDRESS=os.getenv("TARGET_ADDRESS")
+SOURCE_PRIVATE_KEY = os.getenv("SOURCE_PRIVATE_KEY")
+TARGET_PRIVATE_KEY = os.getenv("TARGET_PRIVATE_KEY")
+SOURCE_ADDRESS = os.getenv("SOURCE_ADDRESS")
+TARGET_ADDRESS = os.getenv("TARGET_ADDRESS")
 
 # Print constants that you can use in your code
-print(f"ETH_RPC_URL: {ETH_RPC_URL}")
-print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
+#print(f"ETH_RPC_URL: {ETH_RPC_URL}")
+#print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
+
+# -------------------------------------------
+# UnitTest Test Cases
+# -------------------------------------------
 
 class TestAgent(unittest.TestCase):
 

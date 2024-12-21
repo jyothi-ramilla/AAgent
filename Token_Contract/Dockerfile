@@ -13,7 +13,7 @@ COPY . /app
 RUN python3 -m venv /app/venv
 
 # Install the required Python packages in the virtual environment
-RUN /app/venv/bin/pip install --no-cache-dir web3 py-solc-x python-dotenv
+RUN /app/venv/bin/pip install --no-cache-dir web3 py-solc-x 
 
 # Set environment variables
 ENV RPC_URL=$RPC_URL
