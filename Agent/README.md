@@ -110,7 +110,7 @@ import os
 from web3 import Web3
 from dotenv import load_dotenv
 
-Create accounts using web3 and ETH_RPC_URL
+#Create accounts using web3 and ETH_RPC_URL
 
 # Ensure the values are loaded
 if not ETH_RPC_URL or not CONTRACT_ADDRESS:
