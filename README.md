@@ -9,6 +9,12 @@ Before running the project, ensure you have the following tools installed:
 - **Docker**: Used to containerize the entire codebase and manage dependencies.
 - **Bash**: Used to execute setup scripts and automate the process.
 
+## Initial Setup
+
+1. Create a Forked Test Node in Tenderly - Ethereum Mainnet Fork.
+2. Set up two accounts (source address and target address) for running the Agent. Since it runs on the Ethereum Test Node, ensure both accounts are funded with Test ETH.
+3. Use either of the above account addresses (source or target) for deploying the ERC20 Token Contract. Ensure that both accounts have sufficient ERC20 tokens after deployment. These tokens will be required for the Agent code to transfer balances between the source address and the target address and vice versa.
+
 ## Codebases
 
 ### Token_Contract
