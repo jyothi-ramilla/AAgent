@@ -5,12 +5,12 @@
 This project involves an ERC-20 token smart contract and a Python-based autonomous agent that interacts with it. The smart contract allows for token transfers, approvals, and balance tracking, while the agent handles various messages and performs token transactions.
 
 ## Clone from Github
-
+```
 1. git clone -b main https://github.com/jyothi-ramilla/AAgent.git
 2. cd Agent
-
+```
 ## 1.Folder Structure
-
+```
 Agent/
 │
 ├── src/
@@ -41,6 +41,7 @@ Agent/
 ├── .env                           # Environment variables file
 ├── requirements.txt               # Python dependencies
 └── README.md                      # Project documentation
+```
 
 ## 2.Prerequisites
 
