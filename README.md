@@ -10,7 +10,7 @@ This project involves an ERC-20 token smart contract and a Python-based autonomo
 2. cd Agent
 
 ## 1.Folder Structure
-
+```
 Agent/
 │
 ├── src/
@@ -39,6 +39,7 @@ Agent/
 ├── .env                           # Environment variables file
 ├── requirements.txt               # Python dependencies
 └── README.md                      # Project documentation
+```
 
 ## 2.Prerequisites
 
