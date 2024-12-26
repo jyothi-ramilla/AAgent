@@ -4,6 +4,26 @@
 
 This project involves an ERC-20 token smart contract and a Python-based autonomous agent that interacts with it. The smart contract allows for token transfers, approvals, and balance tracking, while the agent handles various messages and performs token transactions.
 
+## Design Flow
+
+1. Web3 and Environment Setup - Connects to Ethereum using web3_instance and loads sensitive data (private keys, RPC URL) securely from a .env file.
+2. Message Exchange - Agents communicate using Inbox and Outbox classes to send and receive messages seamlessly. 
+3. Nonce Management - The NonceManager ensures proper transaction ordering by managing the nonce and avoiding race conditions.
+4. ERC-20 Token Interaction - The ERC20Handler fetches token balances and handles secure token transfers with proper gas and nonce management.
+5. Autonomous Agents - Agents, running as threads, process messages (process_messages()), generate random messages, and periodically check token balances independently and concurrently.
+6. Execution Flow - Two agents are created, register message handlers (e.g., "hello" for logging, "crypto" for token transfer), and continuously run in separate threads to achieve autonomy.
+
+### Threads
+Using threads, the agents can:
+
+1. Operate independently without blocking each other.
+2. Perform multiple tasks concurrently, such as:
+3. Processing incoming messages.
+4. Generating and sending random messages.
+5. Checking token balances periodically.
+
+So I have used Threads.
+
 ## Clone from Github
 ```
 1. git clone -b main https://github.com/jyothi-ramilla/AAgent.git
@@ -192,22 +212,3 @@ The agent is designed to interact with the deployed smart contract by processing
 
 ---
 
-## 7. Design Flow
-
-1. Web3 and Environment Setup - Connects to Ethereum using web3_instance and loads sensitive data (private keys, RPC URL) securely from a .env file.
-2. Message Exchange - Agents communicate using Inbox and Outbox classes to send and receive messages seamlessly. 
-3. Nonce Management - The NonceManager ensures proper transaction ordering by managing the nonce and avoiding race conditions.
-4. ERC-20 Token Interaction - The ERC20Handler fetches token balances and handles secure token transfers with proper gas and nonce management.
-5. Autonomous Agents - Agents, running as threads, process messages (process_messages()), generate random messages, and periodically check token balances independently and concurrently.
-6. Execution Flow - Two agents are created, register message handlers (e.g., "hello" for logging, "crypto" for token transfer), and continuously run in separate threads to achieve autonomy.
-
-### Threads
-Using threads, the agents can:
-
-1. Operate independently without blocking each other.
-2. Perform multiple tasks concurrently, such as:
-3. Processing incoming messages.
-4. Generating and sending random messages.
-5. Checking token balances periodically.
-
-So I have used Threads.
