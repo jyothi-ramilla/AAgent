@@ -13,12 +13,15 @@ RUN pip install --no-cache-dir virtualenv
 # Create a virtual environment
 RUN python3 -m venv /app/venv
 
+RUN . /app/venv/bin/activate && pip install --no-cache-dir setuptools
+
 # Install dependencies inside the virtual environment
-RUN /app/venv/bin/pip install --no-cache-dir web3 
+RUN /app/venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # Set the virtual environment to be active
 ENV VIRTUAL_ENV=/app/venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Run the unittest-based test script
-CMD ["python", "-m", "unittest", "test_agents.py"]
+# Run unit tests
+CMD ["sh", "-c", ". /app/venv/bin/activate && python -m unittest tests/unittest_agent.py && python -m unittest tests/integrationtest_agent.py"]
+

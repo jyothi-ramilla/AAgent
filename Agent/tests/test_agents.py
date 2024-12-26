@@ -2,27 +2,14 @@ import unittest
 from threading import Thread
 import time
 from unittest.mock import patch, MagicMock
-from agent import AutonomousAgent, Inbox, Outbox, ERC20Handler, NonceManager, logger
+from src.agents.autonomous_agent import AutonomousAgent
+from src.agents.inbox import Inbox
+from src.agents.outbox import Outbox
+from src.erc20.erc20_handler import ERC20Handler
+from src.erc20.nonce_manager import NonceManager
+from src.utils.logging_utils import setup_logger
+from src.utils.env_loader import load_env
 import os
-
-# -------------------------------------------
-# Custom .env loader using the standard library
-# -------------------------------------------
-def load_env(file_path=".env"):
-    """Load environment variables from a .env file into os.environ."""
-    try:
-        with open(file_path, "r") as file:
-            for line in file:
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                key, value = line.split("=", 1)
-                os.environ[key] = value
-    except FileNotFoundError:
-        logger.warning(f"Environment file '{file_path}' not found. Skipping.")
-    except Exception as e:
-        logger.error(f"Error loading environment variables: {e}")
-        raise
 
 # Load environment variables from .env file
 load_env()
@@ -35,53 +22,62 @@ TARGET_PRIVATE_KEY = os.getenv("TARGET_PRIVATE_KEY")
 SOURCE_ADDRESS = os.getenv("SOURCE_ADDRESS")
 TARGET_ADDRESS = os.getenv("TARGET_ADDRESS")
 
-# Print constants that you can use in your code
-#print(f"ETH_RPC_URL: {ETH_RPC_URL}")
-#print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
-
 # -------------------------------------------
 # UnitTest Test Cases
 # -------------------------------------------
 
 class TestAgent(unittest.TestCase):
 
-    @patch('agent.web3_instance')
+    @patch('web3.Web3')
     def setUp(self, mock_web3):
         # Mock Web3 instance
+        mock_web3.is_connected.return_value = True
         mock_web3.eth.get_transaction_count.return_value = 0
         mock_web3.eth.gas_price = 1
         mock_web3.eth.estimate_gas.return_value = 21000
         mock_web3.eth.send_raw_transaction.return_value = b"mock_tx_hash"
-        mock_web3.is_connected.return_value = True
 
         # Set up inbox, outbox, and ERC20Handler mock
         self.inbox = Inbox()
         self.outbox = Outbox(self.inbox)
 
-        self.nonce_manager = NonceManager(SOURCE_ADDRESS)
+        # Mock NonceManager and ERC20Handler
+        self.nonce_manager = NonceManager(SOURCE_ADDRESS, mock_web3)
         self.erc20_handler = ERC20Handler(
             contract_address=CONTRACT_ADDRESS,
             private_key=SOURCE_PRIVATE_KEY,
             source_address=SOURCE_ADDRESS,
             target_address=TARGET_ADDRESS,
-            nonce_manager=self.nonce_manager
+            nonce_manager=self.nonce_manager,
+            web3_instance=mock_web3,
+            chain_id=int(os.getenv("CHAIN_ID", 123456))
         )
         self.erc20_handler.fetch_balance = MagicMock(return_value=100)
         self.erc20_handler.execute_transfer = MagicMock()
 
-        self.agent = AutonomousAgent("TestAgent", self.inbox, self.outbox, self.erc20_handler)
-        self.agent.register_message_handler("hello", lambda msg: logger.info(f"Responding to 'hello' in message: {msg}"))
+        self.logger = setup_logger() 
+
+        self.agent = AutonomousAgent("TestAgent", self.inbox, self.outbox, self.erc20_handler, self.logger)
+
+        # Register message handlers
+        self.agent.register_message_handler("hello", lambda msg: self.logger.info(f"Responding to 'hello' in message: {msg}"))
         self.agent.register_message_handler("crypto", lambda msg: self.erc20_handler.execute_transfer(1))
+
+        # Define WORDS list for testing
+        self.agent.WORDS = ["hello", "sun", "world", "space", "moon", "crypto", "sky", "ocean", "universe", "human"]
+
+
 
     def tearDown(self):
         """Called after every test"""
-        logger.info(f"{self._testMethodName}: Test completed")
+        self.logger.info(f"{self._testMethodName}: Test completed")
 
     def test_generate_random_messages(self):
         """Test random message generation"""
         try:
             self.agent.running = True
-            thread = self._start_thread(self.agent.generate_random_messages)
+            thread = self._start_thread(self.agent.generate_random_messages, self.agent.WORDS)
+            #thread = self._start_thread(self.agent.generate_random_messages, args=(self.agent.WORDS,))
 
             time.sleep(3)  # Allow messages to generate
             self.agent.running = False
@@ -94,23 +90,24 @@ class TestAgent(unittest.TestCase):
                 for word in words:
                     self.assertIn(word, self.agent.WORDS)
 
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
+
 
     def test_handle_hello_messages(self):
         """Test handling of 'hello' messages"""
         try:
             self.inbox.add_message("hello world")
 
-            with self.assertLogs(logger, level='INFO') as log:
+            with self.assertLogs(self.logger, level='INFO') as log:
                 self.agent.process_messages()
 
             self.assertTrue(any("Responding to 'hello'" in message for message in log.output))
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
 
     def test_handle_crypto_messages(self):
@@ -120,9 +117,9 @@ class TestAgent(unittest.TestCase):
             self.agent.process_messages()
 
             self.erc20_handler.execute_transfer.assert_called_once_with(1)
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
 
     def test_check_balance_periodically(self):
@@ -136,13 +133,13 @@ class TestAgent(unittest.TestCase):
             thread.join()
 
             self.erc20_handler.fetch_balance.assert_called()
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
 
-    def _start_thread(self, target):
-        thread = Thread(target=target)
+    def _start_thread(self, target, *args):
+        thread = Thread(target=target, args=args)
         thread.start()
         return thread
 
@@ -152,43 +149,44 @@ class TestAgent(unittest.TestCase):
 
 class TestAgentIntegration(unittest.TestCase):
 
-    @patch('agent.web3_instance')
+    @patch('web3.Web3')
     def setUp(self, mock_web3):
         # Mock Web3 instance
+        mock_web3.is_connected.return_value = True
         mock_web3.eth.get_transaction_count.return_value = 0
         mock_web3.eth.gas_price = 1
         mock_web3.eth.estimate_gas.return_value = 21000
         mock_web3.eth.send_raw_transaction.return_value = b"mock_tx_hash"
-        mock_web3.is_connected.return_value = True
 
-        # Mock ERC20Handler dependencies
-        self.mock_fetch_balance = MagicMock(return_value=100)
-        self.mock_execute_transfer = MagicMock()
-
-        # Set up inbox, outbox, and ERC20Handler
+        # Set up inbox, outbox, and ERC20Handler mock
         self.inbox = Inbox()
         self.outbox = Outbox(self.inbox)
-        self.nonce_manager = NonceManager(SOURCE_ADDRESS)
+        self.nonce_manager = NonceManager(SOURCE_ADDRESS, mock_web3)
         self.erc20_handler = ERC20Handler(
             contract_address=CONTRACT_ADDRESS,
             private_key=SOURCE_PRIVATE_KEY,
             source_address=SOURCE_ADDRESS,
             target_address=TARGET_ADDRESS,
-            nonce_manager=self.nonce_manager
+            nonce_manager=self.nonce_manager,
+            web3_instance=mock_web3,
+            chain_id=int(os.getenv("CHAIN_ID", 123456))
         )
+        self.erc20_handler.fetch_balance = MagicMock(return_value=100)
+        self.erc20_handler.execute_transfer = MagicMock()
+        self.logger = setup_logger() 
 
-        self.erc20_handler.fetch_balance = self.mock_fetch_balance
-        self.erc20_handler.execute_transfer = self.mock_execute_transfer
+        self.agent = AutonomousAgent("IntegrationTestAgent", self.inbox, self.outbox, self.erc20_handler, self.logger)
 
-        self.agent = AutonomousAgent("IntegrationTestAgent", self.inbox, self.outbox, self.erc20_handler)
-
-        # Register handlers
-        self.agent.register_message_handler("hello", lambda msg: logger.info(f"Responding to 'hello' in message: {msg}"))
+        # Register message handlers
+        self.agent.register_message_handler("hello", lambda msg: self.logger.info(f"Responding to 'hello' in message: {msg}"))
         self.agent.register_message_handler("crypto", lambda msg: self.erc20_handler.execute_transfer(1))
+        # Define WORDS list for testing
+        self.agent.WORDS = ["hello", "sun", "world", "space", "moon", "crypto", "sky", "ocean", "universe", "human"]
+        self.logger = setup_logger() 
 
     def tearDown(self):
         """Called after every test"""
-        logger.info(f"{self._testMethodName}: Test completed")
+        self.logger.info(f"{self._testMethodName}: Test completed")
 
     def test_balance_check_and_transfer(self):
         """Test if balance is checked periodically and transfer happens"""
@@ -204,12 +202,12 @@ class TestAgentIntegration(unittest.TestCase):
             time.sleep(3)  # Allow periodic tasks to execute
 
             # Ensure balance was fetched and transfer occurred
-            self.mock_fetch_balance.assert_called()
-            self.mock_execute_transfer.assert_called_with(50)
+            self.erc20_handler.fetch_balance.assert_called()
+            self.erc20_handler.execute_transfer.assert_called_with(50)
 
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
         finally:
             self.agent.running = False
@@ -222,14 +220,15 @@ class TestAgentIntegration(unittest.TestCase):
             self.inbox.add_message("unknown command")
             self.inbox.add_message("hellohello")
 
-            with self.assertLogs(logger, level='INFO') as log:
+            with self.assertLogs(self.logger, level='INFO') as log:
                 self.agent.process_messages()
                 self.assertFalse(any("Unhandled message type" in message for message in log.output))
 
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
+
 
     def test_concurrent_threads(self):
         """Test if multiple threads can run concurrently without issues"""
@@ -237,8 +236,7 @@ class TestAgentIntegration(unittest.TestCase):
             # Start multiple threads for balance checking and random message generation
             self.agent.running = True
             balance_thread = self._start_thread(self.agent.check_balance_periodically)
-            message_thread = self._start_thread(self.agent.generate_random_messages)
-
+            message_thread = self._start_thread(self.agent.generate_random_messages, self.agent.WORDS)        
             time.sleep(3)  # Allow threads to run concurrently
 
             self.agent.running = False
@@ -247,9 +245,9 @@ class TestAgentIntegration(unittest.TestCase):
 
             # Ensure no race conditions or deadlocks occurred
             self.assertTrue(self.inbox.get_messages())
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
 
     def test_handle_web3_interaction_failure(self):
@@ -262,9 +260,9 @@ class TestAgentIntegration(unittest.TestCase):
                 self.erc20_handler.fetch_balance()
             
             self.assertTrue("Web3 network error" in str(context.exception))
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
 
     def test_balance_retrieval_failure(self):
@@ -277,13 +275,13 @@ class TestAgentIntegration(unittest.TestCase):
                 self.erc20_handler.fetch_balance()
             
             self.assertTrue("Balance retrieval failed" in str(context.exception))
-            logger.info(f"{self._testMethodName}: Passed")
+            self.logger.info(f"{self._testMethodName}: Passed")
         except AssertionError as e:
-            logger.error(f"{self._testMethodName}: Failed - {e}")
+            self.logger.error(f"{self._testMethodName}: Failed - {e}")
             raise
 
-    def _start_thread(self, target):
-        thread = Thread(target=target)
+    def _start_thread(self, target, *args):
+        thread = Thread(target=target, args=args)
         thread.start()
         return thread
 
