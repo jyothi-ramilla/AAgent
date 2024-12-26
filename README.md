@@ -7,11 +7,11 @@ This project involves an ERC-20 token smart contract and a Python-based autonomo
 ## Clone from Github
 ```
 1. git clone -b main https://github.com/jyothi-ramilla/AAgent.git
-2. cd Agent
+2. cd agent
 ```
 ## 1.Folder Structure
 ```
-Agent/
+agent/
 │
 ├── src/
 │   ├── agents/
@@ -55,7 +55,7 @@ Agent/
 
 ## 3. Environment Variables
 
-1. Need the source and target address for doing the transactions. You can create two testing addresses using below script. 
+1. Need the source and target address for doing the transactions. You can create two testing addresses using below script.
 
 #### Script for creating Accounts and Private keys
 This script demonstrates how to create Ethereum accounts and generate private keys using Web3.
@@ -102,7 +102,7 @@ If you have any ERC20 smartcontract you can deploy that and use the deployed con
 (or)
 
 You can make use of token_contract folder(In this repo) for deploying the contract. 
-If you are in Agent folder then
+If you are in agent folder then
 ```bash
 cd token_contract
 ```
