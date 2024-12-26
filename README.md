@@ -49,9 +49,11 @@ Agent/
 
 2. Bash for shell scripting
 
-2. Python dependencies file (see requirements.txt).List all python libraries required to run the code. In this code base we used only web3
+3. Python dependencies file (see requirements.txt).List all python libraries required to run the code. In this code base we used only web3
 
-### 3. Environment Variables
+4. Environment variables
+
+## 3. Environment Variables
 
 1. Need the source and target address for doing the transactions. You can create two testing addresses using below script. 
 
@@ -115,7 +117,7 @@ ERC20_CONTRACT_ADDRESS=<Deployed ERC20 Contract Address>
 SOURCE_PRIVATE_KEY=<Private Key for Source Address>
 TARGET_PRIVATE_KEY=<Private Key for Target Address>
 
-## 3.How to run the Project
+## 4.How to run the Project
 
 ### Docker Setup
 
@@ -150,7 +152,7 @@ This will build the Docker image for testing and execute the test cases.
 
 ---
 
-## 4.Agent Code - src/main.py
+## 5.Agent Code - src/main.py
 
 The agent is designed to interact with the deployed smart contract by processing messages, checking balances, and performing transactions.
 
@@ -170,7 +172,7 @@ The agent is designed to interact with the deployed smart contract by processing
 - `check_balance_periodically()`: Checks and logs the balance at regular intervals.
 ---
 
-## 5.Test Cases  
+## 6.Test Cases  
 
 ### Unit Tests - tests/unittest_agent.py:
 
@@ -189,7 +191,7 @@ The agent is designed to interact with the deployed smart contract by processing
 
 ---
 
-## 6. Design Flow
+## 7. Design Flow
 
 1. Web3 and Environment Setup - Connects to Ethereum using web3_instance and loads sensitive data (private keys, RPC URL) securely from a .env file.
 2. Message Exchange - Agents communicate using Inbox and Outbox classes to send and receive messages seamlessly. 
