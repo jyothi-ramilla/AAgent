@@ -10,7 +10,7 @@ This project involves an ERC-20 token smart contract and a Python-based autonomo
 2. cd Agent
 
 ## 1.Folder Structure
-```
+
 Agent/
 │
 ├── src/
@@ -36,10 +36,11 @@ Agent/
 │   ├── integrationtest_agent.py   # integration tests for the agent
 |   ├── unittest_agent.py          # Unit tests for the agent
 │
+├── token_contract                 # Codebase for deploying ERC20 Token Contract. This is optional if you already have the ERC20 contract. Use it in case needed
+│
 ├── .env                           # Environment variables file
 ├── requirements.txt               # Python dependencies
 └── README.md                      # Project documentation
-```
 
 ## 2.Prerequisites
 
@@ -95,11 +96,11 @@ If you have any ERC20 smartcontract you can deploy that and use the deployed con
 
 (or)
 
-You can make use of Token_contract code(In this repo) for deploying the contract. 
-
-1. git clone -b main https://github.com/jyothi-ramilla/AAgent.git
-2. cd Token_Contract
-
+You can make use of token_contract folder(In this repo) for deploying the contract. 
+If you are in Agent folder then
+```bash
+cd token_contract
+```
 You need to deploy once and use the contract address everytime for doing the transactions on Ethereum node. (This is optional).
 
 Create a .env file in the project root with the following variables:
