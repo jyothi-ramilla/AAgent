@@ -109,14 +109,14 @@ cd token_contract
 You need to deploy once and use the contract address everytime for doing the transactions on Ethereum node. (This is optional).
 
 Create a .env file in the project root with the following variables:
-
+```
 ETH_RPC_URL=<Your Ethereum RPC URL>
 SOURCE_ADDRESS=<Source Ethereum Address>
 TARGET_ADDRESS=<Target Ethereum Address>
 ERC20_CONTRACT_ADDRESS=<Deployed ERC20 Contract Address>
 SOURCE_PRIVATE_KEY=<Private Key for Source Address>
 TARGET_PRIVATE_KEY=<Private Key for Target Address>
-
+```
 ## 4.How to run the Project
 
 ### Docker Setup
