@@ -1,4 +1,4 @@
-#### Note: Use this code if you dont have the ERC20 contract for running the agent code. 
+#### Note: Use this code if you dont have the ERC20 contract address to run the agent code. 
 
 # AgentToken Smart Contract
 
