@@ -1,10 +1,10 @@
 #### Note: Use this code if you dont have the ERC20 contract for running the agent code. 
 
-# AIAgentToken Smart Contract
+# AgentToken Smart Contract
 
 ## Overview
 
-The `AIAgentToken` is an ERC-20 token smart contract with the following features. It is designed to create a token on the Ethereum blockchain and provide basic functionalities such as transferring tokens, approving spenders, and tracking balances.
+The `AgentToken` is an ERC-20 token smart contract with the following features. It is designed to create a token on the Ethereum blockchain and provide basic functionalities such as transferring tokens, approving spenders, and tracking balances.
 
 ## Clone the Repository
 1. git clone -b main https://github.com/jyothi-ramilla/AAgent.git
