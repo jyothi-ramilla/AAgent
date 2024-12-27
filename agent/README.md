@@ -69,7 +69,7 @@ agent/
 
 2. Bash for shell scripting
 
-3. Python dependencies file (see requirements.txt).List all python libraries required to run the code. In this code base we used only web3
+3. Python dependencies file (see requirements.txt).List all python libraries required to run the code. In this code base we used Web3 and Standard libraries
 
 4. Environment variables
 
