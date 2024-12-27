@@ -11,7 +11,7 @@ The `AIAgentToken` is an ERC-20 token smart contract with the following features
 2. cd AAgent/agent/token_contract
 
 ## 1.Folder Structure
-
+```
 token_contract
 ├── contracts
 │   ├── AgentToken.sol            # Solidity source code
@@ -27,7 +27,7 @@ token_contract
 ├── src
 │   ├── deployer.py              # Contains contract deployment logic
 │   └── manager.py               # Contains contract management logic (optional additional logic)
-
+```
 ## 2.Prerequisites
 
 1. Docker and Docker Compose
