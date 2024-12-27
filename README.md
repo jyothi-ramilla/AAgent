@@ -27,7 +27,7 @@ So I have used Threads.
 ## Clone from Github
 ```
 1. git clone -b main https://github.com/jyothi-ramilla/AAgent.git
-2. cd agent
+2. cd AAgent/agent
 ```
 ## 1.Folder Structure
 ```

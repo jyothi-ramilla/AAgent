@@ -4,8 +4,6 @@ from web3 import Web3
 import solcx
 from web3.exceptions import ContractLogicError
 
-# Configure logging settings
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class EthereumDeployer:
@@ -19,14 +17,6 @@ class EthereumDeployer:
         self.contract_abi = None
         self.contract_bytecode = None
         self.contract_address = None
-
-    def _fetch_env_variable(self, variable_name):
-        """Fetch environment variables with error handling."""
-        value = os.environ.get(variable_name)
-        if not value:
-            logger.error(f"Environment variable '{variable_name}' is missing.")
-            raise EnvironmentError(f"{variable_name} not set in environment variables.")
-        return value
 
     def connect_to_network(self):
         """Establish a connection to the Ethereum network."""
@@ -46,7 +36,7 @@ class EthereumDeployer:
             raise e
 
     def compile_contract(self, contract_path):
-        """Compile the Solidity smart contract and return ABI and bytecode."""
+        """Compile the Solidity smart contract and save ABI and bytecode to artifacts folder."""
         try:
             with open(contract_path, 'r') as file:
                 contract_source_code = file.read()
@@ -72,6 +62,20 @@ class EthereumDeployer:
             self.contract_abi = compiled_contract['contracts']['AgentToken.sol']['AgentToken']['abi']
             self.contract_bytecode = compiled_contract['contracts']['AgentToken.sol']['AgentToken']['evm']['bytecode']['object']
             logger.info("Contract compiled successfully.")
+
+            # Save ABI and Bytecode in the artifacts folder
+            artifacts_folder = os.path.join(os.path.dirname(contract_path), 'artifacts')
+            os.makedirs(artifacts_folder, exist_ok=True)
+
+            abi_path = os.path.join(artifacts_folder, 'AgentToken_abi.json')
+            bytecode_path = os.path.join(artifacts_folder, 'AgentToken_bytecode.json')
+
+            with open(abi_path, 'w') as abi_file:
+                abi_file.write(Web3.to_json(self.contract_abi))
+            with open(bytecode_path, 'w') as bytecode_file:
+                bytecode_file.write(Web3.to_json({"bytecode": self.contract_bytecode}))
+
+            logger.info(f"ABI and bytecode saved to {artifacts_folder}.")
         except Exception as e:
             logger.error(f"Error during contract compilation: {e}")
             raise e
@@ -119,60 +123,3 @@ class EthereumDeployer:
     def get_contract_address(self):
         """Return the deployed contract address."""
         return self.contract_address
-
-class DeploymentManager:
-    """Class to manage the deployment of a contract."""
-    
-    def __init__(self, contract_path, rpc_url, private_key):
-        self.contract_path = contract_path
-        self.rpc_url = rpc_url
-        self.private_key = private_key
-        self.deploy = EthereumDeployer(self.rpc_url, self.private_key)
-
-    def execute_deployment(self):
-        """Execute the full contract deployment process."""
-        try:
-            # Connect to the Ethereum network
-            self.deploy.connect_to_network()
-
-            # Compile the smart contract
-            self.deploy.compile_contract(self.contract_path)
-
-            # Prepare the account for deployment
-            self.deploy.prepare_account()
-
-            # Deploy the smart contract
-            initial_supply = 1000000  # Example initial supply for ERC-20 tokens
-            self.deploy.deploy_contract(initial_supply)
-
-            # Return the deployed contract address
-            return self.deploy.get_contract_address()
-
-        except Exception as e:
-            logger.error(f"Deployment process failed: {e}")
-            raise e
-
-def main():
-    """Main function to handle the smart contract deployment process."""
-    try:
-        # Fetch environment variables
-        rpc_url = os.environ.get("ETH_RPC_URL")
-        deployer_private_key = os.environ.get("DEPLOYER_PRIVATE_KEY")
-
-        if not rpc_url or not deployer_private_key:
-            logger.error("RPC_URL or DEPLOYER_PRIVATE_KEY is missing in environment variables.")
-            raise EnvironmentError("Missing RPC_URL or DEPLOYER_PRIVATE_KEY.")
-
-        # Instantiate DeploymentManager to handle contract deployment
-        deployment_manager = DeploymentManager("AgentToken.sol", rpc_url, deployer_private_key)
-
-        # Execute the deployment process
-        contract_address = deployment_manager.execute_deployment()
-
-        logger.info(f"Smart contract successfully deployed at: {contract_address}")
-
-    except Exception as e:
-        logger.error(f"Deployment failed: {e}")
-
-if __name__ == "__main__":
-    main()

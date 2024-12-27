@@ -1,7 +1,6 @@
-This is optional.Use it only when needed.
+#### Note: Use this code if you dont have the ERC20 contract for running the agent code. 
 
 # AIAgentToken Smart Contract
-
 
 ## Overview
 
@@ -9,37 +8,49 @@ The `AIAgentToken` is an ERC-20 token smart contract with the following features
 
 ## Clone the Repository
 1. git clone -b main https://github.com/jyothi-ramilla/AAgent.git
-2. cd Agent
-3. cd token_contract
+2. cd AAgent/agent/token_contract
 
-## Folder Structure
-├── AgentToken.abi
-├── AgentToken.sol
-├── deploy_contract.py
-├── deploy.sh
-├── Dockerfile
-├── env-local
-├── README.md
-└── requirements.txt
+## 1.Folder Structure
 
-## To Run the Codebase
+token_contract
+├── contracts
+│   ├── AgentToken.sol            # Solidity source code
+│   └── artifacts                  
+│       ├── AgentToken_abi.json  # ABI file
+│       └── AgentToken_bytecode.json  # Bytecode file
+├── deploy.sh                    # Shell script for deployment
+├── Dockerfile                   # Docker image build instructions
+├── env-local                    # Local environment variables 
+├── main.py                      # Entry point for the deployment process
+├── README.md                    # Project documentation
+├── requirements.txt             # Python dependencies
+├── src
+│   ├── deployer.py              # Contains contract deployment logic
+│   └── manager.py               # Contains contract management logic (optional additional logic)
 
-1. Make the deploy script executable:
-   ```bash
-   chmod +x ./deploy.sh
-   ```
+## 2.Prerequisites
 
-2. Run the deploy script:
-   ```bash
-   ./deploy.sh
-   ```
-   This command will create the Docker image and deploy the smart contract. Once completed, you will receive the smart contract address.
+1. Docker and Docker Compose
 
-## Dockerfile
+2. Bash for shell scripting
 
-The Dockerfile is used to set up the Python environment and deploy the smart contract using the specified tools and scripts.
+3. Python dependencies file (see requirements.txt).List all python libraries required to run the code.
 
-## Smart Contract Details
+4. Environment variables 
+
+5. ERC20 SmartContract
+
+
+## 3.Configure the environment variables
+```
+ETH_RPC_URL=<Tenderly Ethereum Node RPC URL>
+DEPLOYER_PRIVATE_KEY=<privatekey of the Deployer>
+```
+## 4.Smart Contract Details
+
+### ERC-20 Standard:
+
+This contract adheres to the ERC-20 standard, which is widely used for managing tokens on the Ethereum blockchain.
 
 ### Token Details:
 - **Name:** Agent Token
@@ -56,18 +67,26 @@ The Dockerfile is used to set up the Python environment and deploy the smart con
 - `Transfer`: Logs token transfers between addresses.
 - `Approval`: Logs when an owner allows a spender to transfer tokens.
 
-## ERC-20 Standard:
+## 5.To Run the Codebase
 
-This contract adheres to the ERC-20 standard, which is widely used for managing tokens on the Ethereum blockchain.
+The Dockerfile is used to set up the Python environment and deploy the smart contract using the specified tools and scripts.
 
-## CONTRACT ADDRESS
+1. Make the deploy script executable:
+   ```bash
+   chmod +x ./deploy.sh
+   ```
 
-Once the smart contract is deployed, the following contract address will be generated:
+2. Run the deploy script:
+   ```bash
+   ./deploy.sh
+   ```
+   This command will create the Docker image and deploy the smart contract. Once completed, you will receive the smart contract address.
+
+
+### CONTRACT ADDRESS
+
+Once the smart contract is deployed, the contract address will be generated and its artifacts are stored in contracts/artifacts folder
 
 **Smart Contract Address:** 
 
 This address represents the deployed token contract address on the Ethereum Node of Tenderly.
-
-## env file 
-
-Consist of ETH_RPC_URL(Tenderly Ethereum Node), DEPLOYER_PRIVATE_KEY
