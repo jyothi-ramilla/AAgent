@@ -43,10 +43,13 @@ class EthereumDeployer:
 
             self.install_solidity_compiler()
 
+            # Extract contract name dynamically from the Solidity file name
+            contract_name = os.path.splitext(os.path.basename(contract_path))[0]
+
             compiled_contract = solcx.compile_standard({
                 "language": "Solidity",
                 "sources": {
-                    "AgentToken.sol": {
+                    contract_name + ".sol": {
                         "content": contract_source_code
                     }
                 },
@@ -59,16 +62,17 @@ class EthereumDeployer:
                 }
             })
 
-            self.contract_abi = compiled_contract['contracts']['AgentToken.sol']['AgentToken']['abi']
-            self.contract_bytecode = compiled_contract['contracts']['AgentToken.sol']['AgentToken']['evm']['bytecode']['object']
+            # Get ABI and Bytecode dynamically based on the contract name
+            self.contract_abi = compiled_contract['contracts'][contract_name + ".sol"][contract_name]['abi']
+            self.contract_bytecode = compiled_contract['contracts'][contract_name + ".sol"][contract_name]['evm']['bytecode']['object']
             logger.info("Contract compiled successfully.")
 
             # Save ABI and Bytecode in the artifacts folder
             artifacts_folder = os.path.join(os.path.dirname(contract_path), 'artifacts')
             os.makedirs(artifacts_folder, exist_ok=True)
 
-            abi_path = os.path.join(artifacts_folder, 'AgentToken_abi.json')
-            bytecode_path = os.path.join(artifacts_folder, 'AgentToken_bytecode.json')
+            abi_path = os.path.join(artifacts_folder, f'{contract_name}_abi.json')
+            bytecode_path = os.path.join(artifacts_folder, f'{contract_name}_bytecode.json')
 
             with open(abi_path, 'w') as abi_file:
                 abi_file.write(Web3.to_json(self.contract_abi))
