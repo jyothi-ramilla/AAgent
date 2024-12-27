@@ -73,9 +73,10 @@ agent/
 
 4. Environment variables
 
-## 3. Environment Variables
+## 3.Guide to configuring Environment Variables
 
-1. Need the source and target address for doing the transactions. You can create two testing addresses using below script.
+### 1. Generate Source and Target Addresses
+To perform transactions, you'll need source and target addresses. You can create two testing addresses using the script below.
 
 #### Script for creating Accounts and Private keys
 This script demonstrates how to create Ethereum accounts and generate private keys using Web3.
@@ -114,21 +115,31 @@ print(f"Target Address: {target_address}")
 print(f"Target Private Key: {target_private_key}")
 ```
 
-2. An Ethereum node provider (Tenderly) with an RPC URL has to be created. Fund the source and target addresses with Ethereum using Faucet in order to pay for the gas fee for every transaction. 
+### 2. Set Up an Ethereum Node Provider using Tenderly
 
-3. ERC20 Contract has to be deployed on the Ethereum node. 
-If you have any ERC20 smartcontract you can deploy that and use the deployed contract address for running this code. 
+1. Use an Ethereum node provider like Tenderly and obtain an RPC URL.
+2. Fund the source and target addresses using a Faucet to cover the gas fees required for each transaction.
 
-(or)
+### 3.Deploy an ERC20 Contract 
 
-You can make use of token_contract folder(In this repo) for deploying the contract. 
-If you are in agent folder then
+1. Option 1: If you already have an ERC20 smart contract, deploy it and save the contract address. Use this address for all transactions.
+
+2. Option 2: Use the token_contract folder (available in this repository) to deploy the ERC20 contract.
+
+If you are in the agent folder, navigate to the token_contract folder using:
+
 ```bash
 cd token_contract
 ```
-You need to deploy once and use the contract address everytime for doing the transactions on Ethereum node. (This is optional).
+Deploy the contract once and reuse the contract address for all subsequent transactions.
 
-Create a .env file in the project root with the following variables:
+### 4. Ensure Sufficient ERC20 Tokens
+
+1. After deployment, ensure that the source and target addresses hold sufficient balances of the deployed ERC20 tokens.
+2. These tokens are required for transactions like transfers and balance tracking.
+
+### 5. Create a .env file in the project root with the following variables:
+
 ```
 ETH_RPC_URL=<Your Ethereum RPC URL>
 SOURCE_ADDRESS=<Source Ethereum Address>
