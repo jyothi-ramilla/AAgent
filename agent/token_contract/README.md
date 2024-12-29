@@ -61,7 +61,7 @@ token_contract
 ETH_RPC_URL=<Tenderly Ethereum Node RPC URL>
 DEPLOYER_PRIVATE_KEY=<privatekey of the Deployer>
 ```
-## 4.Smart Contract Details
+## 4.Smart Contract Details - contracts/AgentToken.sol
 
 ### ERC-20 Standard:
 

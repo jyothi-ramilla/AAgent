@@ -69,7 +69,8 @@ class EthereumDeployer:
 
             # Save ABI and Bytecode in the artifacts folder
             artifacts_folder = os.path.join(os.path.dirname(contract_path), 'artifacts')
-            os.makedirs(artifacts_folder, exist_ok=True)
+            if not os.path.exists(artifacts_folder):
+                os.makedirs(artifacts_folder)
 
             abi_path = os.path.join(artifacts_folder, f'{contract_name}_abi.json')
             bytecode_path = os.path.join(artifacts_folder, f'{contract_name}_bytecode.json')

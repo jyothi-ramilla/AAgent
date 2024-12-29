@@ -1,2 +1,2 @@
 RPC_URL=<tenderlyurl>
-DEPLOYER_PRIVATE_KEY=<privatekey> #Should start with 0X
+DEPLOYER_PRIVATE_KEY=<privatekey> #Should start with 0x
