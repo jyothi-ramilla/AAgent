@@ -1,5 +1,3 @@
-**Note: Created this branch for creating a Pull request**
-
 # Autonomous Ethereum Agents with ERC20 Integration
 
 ## Overview
