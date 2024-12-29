@@ -84,13 +84,26 @@ This script demonstrates how to create Ethereum accounts and generate private ke
 ```python
 import os
 from web3 import Web3
-from dotenv import load_dotenv
 
-#Create accounts using web3 and ETH_RPC_URL
+# Function to load environment variables from a .env file
+def load_env_variables(env_file):
+    with open(env_file) as file:
+        for line in file:
+            # Ignore lines starting with '#' or empty lines
+            if line.strip() and not line.startswith("#"):
+                key, value = line.split("=", 1)
+                os.environ[key.strip()] = value.strip()
+
+# Load environment variables from the .env file
+load_env_variables(".env")
+
+# Fetch the environment variables
+ETH_RPC_URL = os.getenv("ETH_RPC_URL")
+CONTRACT_ADDRESS = os.getenv("CONTRACT_ADDRESS")
 
 # Ensure the values are loaded
 if not ETH_RPC_URL or not CONTRACT_ADDRESS:
-    raise ValueError("ETH_RPC_URL or CONTRACT_ADDRESS not found in the .env file")
+    raise ValueError("ETH_RPC_URL or CONTRACT_ADDRESS not found in the environment variables")
 
 # Initialize Web3 connection
 w3 = Web3(Web3.HTTPProvider(ETH_RPC_URL))
